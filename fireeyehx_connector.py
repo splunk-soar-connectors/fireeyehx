@@ -193,12 +193,16 @@ class FireeyeHxConnector(BaseConnector):
 
         zip_file_path = "{0}/{1}.zip".format(local_dir, acq_id)
 
+        self.save_progress(f"ZIP File Path: {zip_file_path}")
+
         # Try to stream the response to a file
         if r.status_code == 200:
             try:
                 with open(zip_file_path, 'wb') as f:
                     f.write(r.content)
                     # shutil.copyfileobj(r.raw, f)
+                self.save_progress(f"Wrote the content into zip file")
+
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
                 return RetVal(
@@ -209,16 +213,29 @@ class FireeyeHxConnector(BaseConnector):
                 zip_object = ZipFile(zip_file_path)
                 zip_object.extractall(pwd=self._zip_password, path=local_dir)
             except Exception as e:
-                error_msg = self._get_error_message_from_exception(e)
-                return RetVal(
-                    action_result.set_status(phantom.APP_ERROR, "Unable to extract items from zip file. Error: {0}".format(error_msg)),
-                    None)
+                self.save_progress(f'Exception: {e}. Trying fallback..')
+                try:
+                    tmp_pass = self._zip_password
+                    zip_object.extractall(pwd=tmp_pass.encode(), path=local_dir)
+                except Exception as e:
+                    self.save_progress(f'Exception: {e}. Trying fallback..')
+                    try:
+                        tmp_pass=self._zip_password
+                        zip_object.extractall(pwd=bytes(tmp_pass, 'utf-8'), path=local_dir)
+                    except Exception as e:
+                        self.save_progress(f'Exception: {e}. Trying fallback..')
+                        error_msg = self._get_error_message_from_exception(e)
+                        return RetVal(
+                            action_result.set_status(phantom.APP_ERROR, "Unable to extract items from zip file. Error: {0}".format(error_msg)),
+                                None)
 
             try:
+                self.save_progress("Reading metadata from file '{}/metadata.json'".format(local_dir))
                 with open("{}/metadata.json".format(local_dir)) as f:
                     metadata = json.load(f)
                 target_filename = metadata['req_filename']
                 full_target_path = "{}/{}_".format(local_dir, target_filename)
+                self.save_progress(f"Got 'full_target_path': {full_target_path}")
 
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
@@ -522,11 +539,9 @@ class FireeyeHxConnector(BaseConnector):
         req_path = param["req_path"]
         req_filename = param["req_filename"]
 
-        comment = ""
-        external_id = ""
-        req_use_api = ""
-        comment = param.get('comment')
-        external_id = param.get('external_id')
+        # Get optional param
+        comment = param.get('comment', "".encode())
+        external_id = param.get('external_id', "".encode())
         req_use_api = param.get('req_use_api', False)
 
         file_acq_data = {'req_path': req_path, 'req_filename': req_filename, 'comment': comment,
