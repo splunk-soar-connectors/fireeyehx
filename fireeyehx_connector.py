@@ -201,7 +201,7 @@ class FireeyeHxConnector(BaseConnector):
                 with open(zip_file_path, 'wb') as f:
                     f.write(r.content)
                     # shutil.copyfileobj(r.raw, f)
-                self.save_progress(f"Wrote the content into zip file")
+                self.save_progress("Wrote the content into zip file")
 
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
@@ -220,14 +220,14 @@ class FireeyeHxConnector(BaseConnector):
                 except Exception as e:
                     self.save_progress(f'Exception: {e}. Trying fallback..')
                     try:
-                        tmp_pass=self._zip_password
+                        tmp_pass = self._zip_password
                         zip_object.extractall(pwd=bytes(tmp_pass, 'utf-8'), path=local_dir)
                     except Exception as e:
                         self.save_progress(f'Exception: {e}. Trying fallback..')
                         error_msg = self._get_error_message_from_exception(e)
                         return RetVal(
-                            action_result.set_status(phantom.APP_ERROR, "Unable to extract items from zip file. Error: {0}".format(error_msg)),
-                                None)
+                            action_result.set_status(phantom.APP_ERROR,
+                            "Unable to extract items from zip file. Error: {0}".format(error_msg)), None)
 
             try:
                 self.save_progress("Reading metadata from file '{}/metadata.json'".format(local_dir))
