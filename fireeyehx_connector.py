@@ -16,19 +16,19 @@
 #
 # Phantom FireEye HX Connector python file
 import json
-
-# Phantom App imports
-import phantom.app as phantom
-
-import requests
 import os
 import uuid
 from zipfile import ZipFile
+
+# Phantom App imports
+import phantom.app as phantom
+import phantom.rules as ph_rules
+import requests
 from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 from phantom.vault import Vault
-import phantom.rules as ph_rules
+
 from fireeyehx_consts import *
 
 
@@ -1174,8 +1174,9 @@ class FireeyeHxConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import pudb
     import argparse
+
+    import pudb
 
     pudb.set_trace()
 
