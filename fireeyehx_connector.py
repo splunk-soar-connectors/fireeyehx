@@ -1,6 +1,6 @@
 # File: fireeyehx_connector.py
 #
-# Copyright (c) 2018-2021 Splunk Inc.
+# Copyright (c) 2018-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class FireeyeHxConnector(BaseConnector):
         :param e: Exception object
         :return: error message
         """
-        error_code = ERR_CODE_MSG
+        error_code = None
         error_msg = ERR_MSG_UNAVAILABLE
 
         try:
@@ -62,19 +62,14 @@ class FireeyeHxConnector(BaseConnector):
                     error_code = e.args[0]
                     error_msg = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = ERR_CODE_MSG
                     error_msg = e.args[0]
         except:
             pass
 
-        try:
-            if error_code in ERR_CODE_MSG:
-                error_text = "Error Message: {}".format(error_msg)
-            else:
-                error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
-        except:
-            self.debug_print(PARSE_ERR_MSG)
-            error_text = PARSE_ERR_MSG
+        if not error_code:
+            error_text = "Error Message: {}".format(error_msg)
+        else:
+            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
 
         return error_text
 
@@ -143,7 +138,7 @@ class FireeyeHxConnector(BaseConnector):
         except:
             error_text = "Cannot parse error details"
 
-        message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code,
+        message = "Status Code: {0}. Data from server: {1}".format(status_code,
                                                                       error_text)
 
         message = message.replace('{', '{{').replace('}', '}}')
@@ -421,9 +416,6 @@ class FireeyeHxConnector(BaseConnector):
         except requests.exceptions.InvalidURL as e:
             self.debug_print(self._get_error_message_from_exception(e))
             return RetVal(action_result.set_status(phantom.APP_ERROR, FIREEYEHX_ERR_INVALID_URL.format(url=url)), resp_json)
-        except requests.exceptions.ConnectionError as e:
-            self.debug_print(self._get_error_message_from_exception(e))
-            return RetVal(action_result.set_status(phantom.APP_ERROR, FIREEYEHX_ERR_CONNECTION_REFUSED.format(url=url)), resp_json)
         except requests.exceptions.InvalidSchema as e:
             self.debug_print(self._get_error_message_from_exception(e))
             return RetVal(action_result.set_status(phantom.APP_ERROR, FIREEYEHX_ERR_INVALID_SCHEMA.format(url=url)), resp_json)
@@ -451,7 +443,7 @@ class FireeyeHxConnector(BaseConnector):
         self.save_progress("Test Connectivity: Preparing API Request")
         ret_val, _ = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.save_progress("Test Connectivity Failed")
             return action_result.get_status()
 
@@ -472,7 +464,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -502,7 +494,7 @@ class FireeyeHxConnector(BaseConnector):
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=params, headers=token_header,
                                                  method='get')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response)
@@ -525,7 +517,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -554,7 +546,7 @@ class FireeyeHxConnector(BaseConnector):
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header,
                                                  data=file_acq_data, method='post')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # flatten out data
@@ -576,7 +568,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -604,7 +596,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=search_data, headers=token_header)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # flatten out data
@@ -626,7 +618,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -644,7 +636,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header, method='get')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # flatten out data
@@ -666,7 +658,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -683,7 +675,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header, method='get')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response)
@@ -702,7 +694,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -726,7 +718,7 @@ class FireeyeHxConnector(BaseConnector):
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header,
                                                  data=triage_acq_data, method='post')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # flatten out data
@@ -754,7 +746,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -772,7 +764,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header, method='get')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response.get('data'))
@@ -797,7 +789,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -816,7 +808,7 @@ class FireeyeHxConnector(BaseConnector):
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header,
                                                  method='post')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response)
@@ -839,7 +831,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -857,7 +849,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header, method='get')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response.get('data'))
@@ -876,7 +868,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -895,7 +887,7 @@ class FireeyeHxConnector(BaseConnector):
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header,
                                                  method='delete')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response)
@@ -914,7 +906,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -934,7 +926,7 @@ class FireeyeHxConnector(BaseConnector):
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header,
                                                  data=contain_data, method='patch')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         action_result.add_data(response)
@@ -957,7 +949,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -984,7 +976,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=search_data, headers=token_header)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         for entry in response.get('data', {}).get('entries', []):
@@ -1004,7 +996,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -1032,7 +1024,7 @@ class FireeyeHxConnector(BaseConnector):
             # make rest call
             ret_val, response = self._make_rest_call(hx_uri, action_result, params=search_data, headers=token_header)
 
-            if (phantom.is_fail(ret_val)):
+            if phantom.is_fail(ret_val):
                 return action_result.get_status()
 
             for entry in response.get('data', {}).get('entries', []):
@@ -1062,7 +1054,7 @@ class FireeyeHxConnector(BaseConnector):
         hx_uri = "/hx/api/v3/token"
         ret_val, response = self.hx_auth_make_rest_call(hx_uri, action_result, params=None, headers=None)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         self.save_progress("Auth Token Complete")
@@ -1080,7 +1072,7 @@ class FireeyeHxConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call(hx_uri, action_result, params=None, headers=token_header, method='get')
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # flatten out data
@@ -1175,6 +1167,7 @@ class FireeyeHxConnector(BaseConnector):
 if __name__ == '__main__':
 
     import argparse
+    import sys
 
     import pudb
 
@@ -1202,7 +1195,7 @@ if __name__ == '__main__':
         try:
             login_url = BaseConnector._get_phantom_base_url() + "login"
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=False)
+            r = requests.get(login_url, verify=False)  # nosemgrep
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -1215,11 +1208,11 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=False, data=data, headers=headers)  # nosemgrep
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: {}".format(e))
-            exit(1)
+            sys.exit(1)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -1236,4 +1229,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
