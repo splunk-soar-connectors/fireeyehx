@@ -1365,6 +1365,7 @@
             "action": "list device groups",
             "identifier": "list_host_sets",
             "description": "Retrieve a list of host sets in HX optionally filtered by name",
+            "verbose": "This action can retrieve a maximum of 100 host sets.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -1453,6 +1454,7 @@
             "action": "get device group",
             "identifier": "get_host_set",
             "description": "List endpoints in a host set",
+            "verbose": "This action can retrieve a maximum of 10000 endpoints in a host set.",
             "type": "investigate",
             "read_only": true,
             "parameters": {

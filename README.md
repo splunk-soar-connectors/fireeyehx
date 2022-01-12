@@ -25,6 +25,7 @@ ports used by the Splunk SOAR Connector.
 |--------------|--------------------|------|
 | http         | tcp                | 80   |
 | https        | tcp                | 443  |
+
 # FireEye HX
 
 Publisher: Splunk Community

@@ -25,6 +25,6 @@ FIREEYEHX_NON_NEG_INT_MSG = "Please provide a valid non-negative integer value i
 # Constants relating to error messages
 FIREEYEHX_ERR_INVALID_URL = "Error connecting to server. Invalid URL: '{url}'"
 FIREEYEHX_ERR_INVALID_SCHEMA = "Error connecting to server. No connection adapters were found for '{url}' url."
-FIREEYEHX_ERR_CONNECTING_TO_SERVER = "Error connecting to server. Details: {error}"
+FIREEYEHX_ERR_CONNECTING_TO_SERVER = "Error connecting to server. {error}"
 FIREEYEHX_STATE_FILE_CORRUPT_ERR = "Error occurred while loading the state file due to its unexpected format. \
     Resetting the state file with the default format. Please try again."

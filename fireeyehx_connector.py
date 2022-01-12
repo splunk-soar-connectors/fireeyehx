@@ -63,7 +63,7 @@ class FireeyeHxConnector(BaseConnector):
                     error_msg = e.args[1]
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
-        except:
+        except Exception:
             pass
 
         if not error_code:
@@ -89,7 +89,7 @@ class FireeyeHxConnector(BaseConnector):
                     return action_result.set_status(phantom.APP_ERROR, FIREEYEHX_VALID_INT_MSG.format(param=key)), None
 
                 parameter = int(parameter)
-            except:
+            except Exception:
                 return action_result.set_status(phantom.APP_ERROR, FIREEYEHX_VALID_INT_MSG.format(param=key)), None
 
             if parameter < 0:
@@ -104,7 +104,7 @@ class FireeyeHxConnector(BaseConnector):
             response_data = response.get('data', {})
             response.update(response_data)
             del response['data']
-        except:
+        except Exception:
             pass
 
         return response
@@ -135,7 +135,7 @@ class FireeyeHxConnector(BaseConnector):
             split_lines = error_text.split('\n')
             split_lines = [x.strip() for x in split_lines if x.strip()]
             error_text = '\n'.join(split_lines)
-        except:
+        except Exception:
             error_text = "Cannot parse error details"
 
         message = "Status Code: {0}. Data from server: {1}".format(status_code,
