@@ -1001,7 +1001,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -1252,7 +1255,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -2186,7 +2192,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -2493,7 +2502,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -2824,7 +2836,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5values",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.source",
@@ -2897,7 +2912,7 @@
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/urllib3-1.26.7-py2.py3-none-any.whl"
+                "input_file": "wheels/urllib3-1.26.8-py2.py3-none-any.whl"
             }
         ]
     }
