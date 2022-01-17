@@ -18,14 +18,17 @@
         },
         {
             "name": "Brandan Neises"
+        },
+        {
+            "name": "Mayur Pipaliya"
         }
     ],
-    "license": "Copyright (c) 2018-2021 Splunk Inc.",
-    "app_version": "2.1.0",
-    "utctime_updated": "2021-10-26T15:10:12.000000Z",
+    "license": "Copyright (c) 2018-2022 Splunk Inc.",
+    "app_version": "2.2.1",
+    "utctime_updated": "2022-01-17T12:44:44.000000Z",
     "package_name": "phantom_fireeyehx",
     "main_module": "fireeyehx_connector.py",
-    "min_phantom_version": "4.10.0.40961",
+    "min_phantom_version": "5.0.0",
     "python_version": "3",
     "app_wizard_version": "1.0.0",
     "configuration": {
@@ -998,7 +1001,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -1249,7 +1255,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -1362,6 +1371,7 @@
             "action": "list device groups",
             "identifier": "list_host_sets",
             "description": "Retrieve a list of host sets in HX optionally filtered by name",
+            "verbose": "This action can retrieve a maximum of 100 host sets.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -1450,6 +1460,7 @@
             "action": "get device group",
             "identifier": "get_host_set",
             "description": "List endpoints in a host set",
+            "verbose": "This action can retrieve a maximum of 10000 endpoints in a host set.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -2181,7 +2192,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -2488,7 +2502,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.message",
@@ -2819,7 +2836,10 @@
                 },
                 {
                     "data_path": "action_result.data.*.md5values",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "md5"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.source",
@@ -2863,5 +2883,37 @@
             },
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "beautifulsoup4",
+                "input_file": "wheels/beautifulsoup4-4.9.1-py3-none-any.whl"
+            },
+            {
+                "module": "certifi",
+                "input_file": "wheels/certifi-2021.10.8-py2.py3-none-any.whl"
+            },
+            {
+                "module": "chardet",
+                "input_file": "wheels/chardet-3.0.4-py2.py3-none-any.whl"
+            },
+            {
+                "module": "idna",
+                "input_file": "wheels/idna-2.10-py2.py3-none-any.whl"
+            },
+            {
+                "module": "requests",
+                "input_file": "wheels/requests-2.25.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "soupsieve",
+                "input_file": "wheels/soupsieve-2.3.1-py3-none-any.whl"
+            },
+            {
+                "module": "urllib3",
+                "input_file": "wheels/urllib3-1.26.8-py2.py3-none-any.whl"
+            }
+        ]
+    }
 }
