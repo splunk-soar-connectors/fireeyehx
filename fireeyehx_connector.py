@@ -24,11 +24,11 @@ from zipfile import ZipFile
 import phantom.app as phantom
 import phantom.rules as ph_rules
 import requests
-from requests.adapters import HTTPAdapter, Retry
 from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 from phantom.vault import Vault
+from requests.adapters import HTTPAdapter, Retry
 
 from fireeyehx_consts import *
 
