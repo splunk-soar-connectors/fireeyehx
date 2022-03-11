@@ -28,6 +28,7 @@ from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 from phantom.vault import Vault
+from requests.adapters import HTTPAdapter, Retry
 
 from fireeyehx_consts import *
 
@@ -45,6 +46,16 @@ class FireeyeHxConnector(BaseConnector):
 
         self._state = None
         self._zip_password = None
+        self.session = requests.Session()
+
+        retries = Retry(
+            total=3,
+            backoff_factor=0.1,
+            status_forcelist=[ 500, 502, 503, 504 ]
+        )
+
+        self.session.mount('http://', HTTPAdapter(max_retries=retries))
+        self.session.mount('https://', HTTPAdapter(max_retries=retries))
 
     def _get_error_message_from_exception(self, e):
         """
@@ -325,7 +336,7 @@ class FireeyeHxConnector(BaseConnector):
         resp_json = None
 
         try:
-            request_func = getattr(requests, method)
+            request_func = getattr(self.session, method)
         except AttributeError:
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
 
@@ -390,7 +401,7 @@ class FireeyeHxConnector(BaseConnector):
         resp_json = None
 
         try:
-            request_func = getattr(requests, method)
+            request_func = getattr(self.session, method)
         except AttributeError:
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
 
