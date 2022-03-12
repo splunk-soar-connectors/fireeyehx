@@ -2,11 +2,11 @@
 # FireEye HX
 
 Publisher: Splunk Community  
-Connector Version: 2\.2\.1  
+Connector Version: 2\.3\.1  
 Product Vendor: FireEye  
 Product Name: FireEye HX  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.0\.0  
+Minimum Product Version: 5\.1\.0  
 
 FireEye HX Endpoint Security
 
