@@ -29,7 +29,7 @@
     "package_name": "phantom_fireeyehx",
     "main_module": "fireeyehx_connector.py",
     "min_phantom_version": "5.1.0",
-    "python_version": "3",
+    "python_version": ["3.9", "3.13"],
     "app_wizard_version": "1.0.0",
     "configuration": {
         "hx_hostname": {
