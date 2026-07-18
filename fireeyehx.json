@@ -23,13 +23,13 @@
             "name": "Mayur Pipaliya"
         }
     ],
-    "license": "Copyright (c) 2018-2025 Splunk Inc.",
+    "license": "Copyright (c) 2018-2026 Splunk Inc.",
     "app_version": "2.3.2",
     "utctime_updated": "2025-04-28T22:49:31.158474Z",
     "package_name": "phantom_fireeyehx",
     "main_module": "fireeyehx_connector.py",
     "min_phantom_version": "5.1.0",
-    "python_version": "3",
+    "python_version": "3.9, 3.13",
     "app_wizard_version": "1.0.0",
     "configuration": {
         "hx_hostname": {
@@ -2891,6 +2891,14 @@
         }
     ],
     "pip39_dependencies": {
+        "wheel": [
+            {
+                "module": "chardet",
+                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
+            }
+        ]
+    },
+    "pip313_dependencies": {
         "wheel": [
             {
                 "module": "chardet",

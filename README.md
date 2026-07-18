@@ -1,12 +1,16 @@
 # FireEye HX
 
-Publisher: Splunk Community \
-Connector Version: 2.3.2 \
-Product Vendor: FireEye \
-Product Name: FireEye HX \
+Publisher: Splunk Community <br>
+Connector Version: 2.3.2 <br>
+Product Vendor: FireEye <br>
+Product Name: FireEye HX <br>
 Minimum Product Version: 5.1.0
 
 FireEye HX Endpoint Security
+
+TLS certificate verification is enabled by default. Disabling it exposes the HX API username,
+password, session token, and responses to interception. Install a trusted certificate on the HX
+appliance or add its issuing certificate to the SOAR trust store instead of disabling verification.
 
 ### Configuration variables
 
@@ -19,30 +23,31 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **hx_username** | required | string | HX API Username |
 **hx_password** | required | password | HX API Password |
 **zip_password** | optional | password | ZIP Archive Password |
+**verify_server_cert** | optional | boolean | Verify the FireEye HX server TLS certificate |
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[get system info](#action-get-system-info) - Get system information for an endpoint \
-[quarantine device](#action-quarantine-device) - Request to contain the endpoint \
-[get quarantine status](#action-get-quarantine-status) - Get the containment status for an endpoint \
-[set quarantine approved](#action-set-quarantine-approved) - Approve containment request for host \
-[unquarantine device](#action-unquarantine-device) - Containment cancellation for host \
-[get acquisition status](#action-get-acquisition-status) - Get status of file acquisition \
-[get triage](#action-get-triage) - Request Endpoint Host Triage Package \
-[list device groups](#action-list-device-groups) - Retrieve a list of host sets in HX optionally filtered by name \
-[get device group](#action-get-device-group) - List endpoints in a host set \
-[list endpoints](#action-list-endpoints) - List and search the endpoints on HX \
-[list acquisitions](#action-list-acquisitions) - Retrieve a list of all acquisitions with optional filters \
-[start acquisition](#action-start-acquisition) - Request a file to be acquired into FireEye HX \
-[get file](#action-get-file) - Pull the acquired file into Phantom Vault \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[get system info](#action-get-system-info) - Get system information for an endpoint <br>
+[quarantine device](#action-quarantine-device) - Request to contain the endpoint <br>
+[get quarantine status](#action-get-quarantine-status) - Get the containment status for an endpoint <br>
+[set quarantine approved](#action-set-quarantine-approved) - Approve containment request for host <br>
+[unquarantine device](#action-unquarantine-device) - Containment cancellation for host <br>
+[get acquisition status](#action-get-acquisition-status) - Get status of file acquisition <br>
+[get triage](#action-get-triage) - Request Endpoint Host Triage Package <br>
+[list device groups](#action-list-device-groups) - Retrieve a list of host sets in HX optionally filtered by name <br>
+[get device group](#action-get-device-group) - List endpoints in a host set <br>
+[list endpoints](#action-list-endpoints) - List and search the endpoints on HX <br>
+[list acquisitions](#action-list-acquisitions) - Retrieve a list of all acquisitions with optional filters <br>
+[start acquisition](#action-start-acquisition) - Request a file to be acquired into FireEye HX <br>
+[get file](#action-get-file) - Pull the acquired file into Phantom Vault <br>
 [get alert](#action-get-alert) - Pull single alert info by ID
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -57,7 +62,7 @@ No Output
 
 Get system information for an endpoint
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -125,7 +130,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Request to contain the endpoint
 
-Type: **contain** \
+Type: **contain** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -151,7 +156,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get the containment status for an endpoint
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -188,7 +193,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Approve containment request for host
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -214,7 +219,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Containment cancellation for host
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -239,7 +244,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get status of file acquisition
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -286,7 +291,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Request Endpoint Host Triage Package
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -337,7 +342,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve a list of host sets in HX optionally filtered by name
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action can retrieve a maximum of 100 host sets.
@@ -368,7 +373,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List endpoints in a host set
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action can retrieve a maximum of 10000 endpoints in a host set.
@@ -425,7 +430,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List and search the endpoints on HX
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -486,7 +491,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve a list of all acquisitions with optional filters
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -535,7 +540,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Request a file to be acquired into FireEye HX
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -592,8 +597,8 @@ summary.total_objects_successful | numeric | | 1 |
 
 Pull the acquired file into Phantom Vault
 
-Type: **investigate** \
-Read only: **True**
+Type: **investigate** <br>
+Read only: **False**
 
 #### Action Parameters
 
@@ -623,7 +628,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Pull single alert info by ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -658,7 +663,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,6 +1,6 @@
 # File: fireeyehx_connector.py
 #
-# Copyright (c) 2018-2025 Splunk Inc.
+# Copyright (c) 2018-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -379,9 +379,7 @@ class FireeyeHxConnector(BaseConnector):
         url = f"{hx_url}:{hx_port}{endpoint}"
         self.save_progress("HX Auth: Execute REST Call")
         try:
-            r = request_func(
-                url, auth=(hx_username, hx_password), json=data, headers=headers, verify=self._verify_server_cert, params=params
-            )
+            r = request_func(url, auth=(hx_username, hx_password), json=data, headers=headers, verify=self._verify_server_cert, params=params)
         except requests.exceptions.InvalidURL as e:
             self.debug_print(self._get_error_message_from_exception(e))
             return RetVal(action_result.set_status(phantom.APP_ERROR, FIREEYEHX_ERR_INVALID_URL.format(url=url)), resp_json)
