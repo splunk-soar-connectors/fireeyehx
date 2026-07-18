@@ -2643,7 +2643,7 @@
             "identifier": "get_file",
             "description": "Pull the acquired file into Phantom Vault",
             "type": "investigate",
-            "read_only": true,
+            "read_only": false,
             "parameters": {
                 "acquisition_id": {
                     "description": "HX Acquisition ID for the acquired file",
