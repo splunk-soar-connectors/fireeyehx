@@ -18,6 +18,7 @@
 import json
 import os
 import uuid
+from urllib.parse import quote
 from zipfile import ZipFile
 
 # Phantom App imports
@@ -507,7 +508,7 @@ class FireeyeHxConnector(BaseConnector):
             "req_use_api": req_use_api,
         }
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/files"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/files"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -592,7 +593,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Get File Status API Call
         acquisition_id = param["acquisition_id"]
 
-        hx_uri = f"/hx/api/v3/acqs/files/{acquisition_id}"
+        hx_uri = f"/hx/api/v3/acqs/files/{quote(str(acquisition_id), safe='')}"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -630,7 +631,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Get File Status API Call
         acquisition_id = param["acquisition_id"]
 
-        hx_uri = f"/hx/api/v3/acqs/files/{acquisition_id}.zip"
+        hx_uri = f"/hx/api/v3/acqs/files/{quote(str(acquisition_id), safe='')}.zip"
         token_header = {"x-feapi-token": fe_auth_token, "Accept": "application/octet-stream"}
 
         # make rest call
@@ -671,7 +672,7 @@ class FireeyeHxConnector(BaseConnector):
 
         triage_acq_data = {}
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/triages"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/triages"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -716,7 +717,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Sys Info API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/sysinfo"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/sysinfo"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -758,7 +759,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -798,7 +799,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -834,7 +835,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -870,7 +871,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
         contain_data = {"state": "contain"}
 
@@ -952,7 +953,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting List of File Acquisitions for All Hosts API Call
         host_set_id = param["host_set_id"]
 
-        hx_uri = f"/hx/api/v3/host_sets/{host_set_id}/hosts"
+        hx_uri = f"/hx/api/v3/host_sets/{quote(str(host_set_id), safe='')}/hosts"
         token_header = {"x-feapi-token": fe_auth_token, "Accept": "application/json"}
 
         search_data = {"offset": 0}
@@ -1004,7 +1005,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Get Alert API Call
         alert_id = param["alert_id"]
 
-        hx_uri = f"/hx/api/v3/alerts/{alert_id}"
+        hx_uri = f"/hx/api/v3/alerts/{quote(str(alert_id), safe='')}"
         token_header = {"x-feapi-token": fe_auth_token, "Accept": "application/json"}
 
         # make rest call
