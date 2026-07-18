@@ -45,6 +45,7 @@ class FireeyeHxConnector(BaseConnector):
 
         self._state = None
         self._zip_password = None
+        self._verify_server_cert = True
         self.session = requests.Session()
 
         retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
@@ -324,7 +325,7 @@ class FireeyeHxConnector(BaseConnector):
 
         if ".zip" in url:
             try:
-                r = request_func(url, json=data, headers=headers, verify=config.get("verify_server_cert", False), params=params, stream=True)
+                r = request_func(url, json=data, headers=headers, verify=self._verify_server_cert, params=params, stream=True)
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
                 self.debug_print(self._get_error_message_from_exception(error_msg))
@@ -338,7 +339,7 @@ class FireeyeHxConnector(BaseConnector):
 
         else:
             try:
-                r = request_func(url, json=data, headers=headers, verify=config.get("verify_server_cert", False), params=params)
+                r = request_func(url, json=data, headers=headers, verify=self._verify_server_cert, params=params)
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
                 self.debug_print(self._get_error_message_from_exception(error_msg))
@@ -377,7 +378,7 @@ class FireeyeHxConnector(BaseConnector):
         self.save_progress("HX Auth: Execute REST Call")
         try:
             r = request_func(
-                url, auth=(hx_username, hx_password), json=data, headers=headers, verify=config.get("verify_server_cert", False), params=params
+                url, auth=(hx_username, hx_password), json=data, headers=headers, verify=self._verify_server_cert, params=params
             )
         except requests.exceptions.InvalidURL as e:
             self.debug_print(self._get_error_message_from_exception(e))
@@ -1087,6 +1088,7 @@ class FireeyeHxConnector(BaseConnector):
         config = self.get_config()
 
         self._zip_password = config.get("zip_password", "unzip-me")
+        self._verify_server_cert = config.get("verify_server_cert", True)
 
         return phantom.APP_SUCCESS
 

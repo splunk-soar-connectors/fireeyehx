@@ -60,6 +60,12 @@
             "description": "ZIP Archive Password",
             "data_type": "password",
             "order": 4
+        },
+        "verify_server_cert": {
+            "description": "Verify the FireEye HX server TLS certificate",
+            "data_type": "boolean",
+            "default": true,
+            "order": 5
         }
     },
     "actions": [
