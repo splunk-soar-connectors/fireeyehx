@@ -181,10 +181,7 @@ class FireeyeHxConnector(BaseConnector):
             error_msg = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to create temporary vault folder. {error_msg}"), None)
 
-        action_params = self.get_current_param()
-        acq_id = action_params.get("acquisition_id", "no_id")
-
-        zip_file_path = f"{local_dir}/{acq_id}.zip"
+        zip_file_path = os.path.join(local_dir, "acquisition.zip")
 
         self.save_progress(f"ZIP File Path: {zip_file_path}")
 
@@ -224,8 +221,12 @@ class FireeyeHxConnector(BaseConnector):
                 self.save_progress(f"Reading metadata from file '{local_dir}/metadata.json'")
                 with open(f"{local_dir}/metadata.json") as f:
                     metadata = json.load(f)
-                target_filename = metadata["req_filename"]
-                full_target_path = f"{local_dir}/{target_filename}_"
+                target_filename = os.path.basename(str(metadata["req_filename"]))
+                if not target_filename or not target_filename.strip("."):
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid acquisition filename"), None)
+                full_target_path = os.path.realpath(os.path.join(local_dir, f"{target_filename}_"))
+                if os.path.dirname(full_target_path) != os.path.realpath(local_dir):
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid acquisition file path"), None)
                 self.save_progress(f"Got 'full_target_path': {full_target_path}")
 
             except Exception as e:
