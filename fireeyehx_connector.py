@@ -1,6 +1,6 @@
 # File: fireeyehx_connector.py
 #
-# Copyright (c) 2018-2025 Splunk Inc.
+# Copyright (c) 2018-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 import json
 import os
 import uuid
+from urllib.parse import quote
 from zipfile import ZipFile
 
 # Phantom App imports
@@ -45,6 +46,7 @@ class FireeyeHxConnector(BaseConnector):
 
         self._state = None
         self._zip_password = None
+        self._verify_server_cert = True
         self.session = requests.Session()
 
         retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
@@ -179,10 +181,7 @@ class FireeyeHxConnector(BaseConnector):
             error_msg = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to create temporary vault folder. {error_msg}"), None)
 
-        action_params = self.get_current_param()
-        acq_id = action_params.get("acquisition_id", "no_id")
-
-        zip_file_path = f"{local_dir}/{acq_id}.zip"
+        zip_file_path = os.path.join(local_dir, "acquisition.zip")
 
         self.save_progress(f"ZIP File Path: {zip_file_path}")
 
@@ -222,8 +221,12 @@ class FireeyeHxConnector(BaseConnector):
                 self.save_progress(f"Reading metadata from file '{local_dir}/metadata.json'")
                 with open(f"{local_dir}/metadata.json") as f:
                     metadata = json.load(f)
-                target_filename = metadata["req_filename"]
-                full_target_path = f"{local_dir}/{target_filename}_"
+                target_filename = os.path.basename(str(metadata["req_filename"]))
+                if not target_filename or not target_filename.strip("."):
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid acquisition filename"), None)
+                full_target_path = os.path.realpath(os.path.join(local_dir, f"{target_filename}_"))
+                if os.path.dirname(full_target_path) != os.path.realpath(local_dir):
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid acquisition file path"), None)
                 self.save_progress(f"Got 'full_target_path': {full_target_path}")
 
             except Exception as e:
@@ -324,7 +327,7 @@ class FireeyeHxConnector(BaseConnector):
 
         if ".zip" in url:
             try:
-                r = request_func(url, json=data, headers=headers, verify=config.get("verify_server_cert", False), params=params, stream=True)
+                r = request_func(url, json=data, headers=headers, verify=self._verify_server_cert, params=params, stream=True)
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
                 self.debug_print(self._get_error_message_from_exception(error_msg))
@@ -338,7 +341,7 @@ class FireeyeHxConnector(BaseConnector):
 
         else:
             try:
-                r = request_func(url, json=data, headers=headers, verify=config.get("verify_server_cert", False), params=params)
+                r = request_func(url, json=data, headers=headers, verify=self._verify_server_cert, params=params)
             except Exception as e:
                 error_msg = self._get_error_message_from_exception(e)
                 self.debug_print(self._get_error_message_from_exception(error_msg))
@@ -376,9 +379,7 @@ class FireeyeHxConnector(BaseConnector):
         url = f"{hx_url}:{hx_port}{endpoint}"
         self.save_progress("HX Auth: Execute REST Call")
         try:
-            r = request_func(
-                url, auth=(hx_username, hx_password), json=data, headers=headers, verify=config.get("verify_server_cert", False), params=params
-            )
+            r = request_func(url, auth=(hx_username, hx_password), json=data, headers=headers, verify=self._verify_server_cert, params=params)
         except requests.exceptions.InvalidURL as e:
             self.debug_print(self._get_error_message_from_exception(e))
             return RetVal(action_result.set_status(phantom.APP_ERROR, FIREEYEHX_ERR_INVALID_URL.format(url=url)), resp_json)
@@ -506,7 +507,7 @@ class FireeyeHxConnector(BaseConnector):
             "req_use_api": req_use_api,
         }
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/files"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/files"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -591,7 +592,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Get File Status API Call
         acquisition_id = param["acquisition_id"]
 
-        hx_uri = f"/hx/api/v3/acqs/files/{acquisition_id}"
+        hx_uri = f"/hx/api/v3/acqs/files/{quote(str(acquisition_id), safe='')}"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -629,7 +630,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Get File Status API Call
         acquisition_id = param["acquisition_id"]
 
-        hx_uri = f"/hx/api/v3/acqs/files/{acquisition_id}.zip"
+        hx_uri = f"/hx/api/v3/acqs/files/{quote(str(acquisition_id), safe='')}.zip"
         token_header = {"x-feapi-token": fe_auth_token, "Accept": "application/octet-stream"}
 
         # make rest call
@@ -670,7 +671,7 @@ class FireeyeHxConnector(BaseConnector):
 
         triage_acq_data = {}
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/triages"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/triages"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -715,7 +716,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Sys Info API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/sysinfo"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/sysinfo"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -757,7 +758,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -797,7 +798,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -833,7 +834,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
 
         # make rest call
@@ -869,7 +870,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Contain API Call
         agent_id = param["agent_id"]
 
-        hx_uri = f"/hx/api/v3/hosts/{agent_id}/containment"
+        hx_uri = f"/hx/api/v3/hosts/{quote(str(agent_id), safe='')}/containment"
         token_header = {"x-feapi-token": fe_auth_token}
         contain_data = {"state": "contain"}
 
@@ -951,7 +952,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting List of File Acquisitions for All Hosts API Call
         host_set_id = param["host_set_id"]
 
-        hx_uri = f"/hx/api/v3/host_sets/{host_set_id}/hosts"
+        hx_uri = f"/hx/api/v3/host_sets/{quote(str(host_set_id), safe='')}/hosts"
         token_header = {"x-feapi-token": fe_auth_token, "Accept": "application/json"}
 
         search_data = {"offset": 0}
@@ -1003,7 +1004,7 @@ class FireeyeHxConnector(BaseConnector):
         # Starting Get Alert API Call
         alert_id = param["alert_id"]
 
-        hx_uri = f"/hx/api/v3/alerts/{alert_id}"
+        hx_uri = f"/hx/api/v3/alerts/{quote(str(alert_id), safe='')}"
         token_header = {"x-feapi-token": fe_auth_token, "Accept": "application/json"}
 
         # make rest call
@@ -1087,6 +1088,7 @@ class FireeyeHxConnector(BaseConnector):
         config = self.get_config()
 
         self._zip_password = config.get("zip_password", "unzip-me")
+        self._verify_server_cert = config.get("verify_server_cert", True)
 
         return phantom.APP_SUCCESS
 
