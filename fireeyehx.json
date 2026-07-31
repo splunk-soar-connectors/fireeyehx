@@ -24,8 +24,8 @@
         }
     ],
     "license": "Copyright (c) 2018-2026 Splunk Inc.",
-    "app_version": "2.3.2",
-    "utctime_updated": "2025-04-28T22:49:31.158474Z",
+    "app_version": "3.0.0",
+    "utctime_updated": "2026-07-31T17:01:09.321106Z",
     "package_name": "phantom_fireeyehx",
     "main_module": "fireeyehx_connector.py",
     "min_phantom_version": "5.1.0",
