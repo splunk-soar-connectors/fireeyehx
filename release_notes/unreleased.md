@@ -1,1 +1,3 @@
 **Unreleased**
+
+* Rejected invalid HX identifiers before constructing action request paths (PSAAS-31362).
