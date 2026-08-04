@@ -1,7 +1,7 @@
 # FireEye HX
 
 Publisher: Splunk Community <br>
-Connector Version: 3.0.0 <br>
+Connector Version: 3.0.1 <br>
 Product Vendor: FireEye <br>
 Product Name: FireEye HX <br>
 Minimum Product Version: 5.1.0
